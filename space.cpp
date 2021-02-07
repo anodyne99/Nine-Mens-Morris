@@ -24,7 +24,7 @@ void Space::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 }
 
 void Space::mousePressEvent(QGraphicsSceneMouseEvent *event)
-/*Signals mouse clicked on space*/
+/*Signals mouse clicked on space if not occupied*/
 {
     if (!occupied) {
         emit clicked(rect, this);

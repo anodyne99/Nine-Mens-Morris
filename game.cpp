@@ -41,22 +41,30 @@ Game::Game(QGraphicsScene * scene)
     }
 
     //Adding white pieces
-    whitePieces.push_back(new Piece(100, 750));
-    whitePieces.push_back(new Piece(150, 750));
-    whitePieces.push_back(new Piece(200, 750));
-    whitePieces.push_back(new Piece(250, 750));
-    whitePieces.push_back(new Piece(300, 750));
+    whitePieces.push_back(new Piece(100, 720));
+    whitePieces.push_back(new Piece(150, 720));
+    whitePieces.push_back(new Piece(200, 720));
+    whitePieces.push_back(new Piece(250, 720));
+    whitePieces.push_back(new Piece(300, 720));
+    whitePieces.push_back(new Piece(125, 760));
+    whitePieces.push_back(new Piece(175, 760));
+    whitePieces.push_back(new Piece(225, 760));
+    whitePieces.push_back(new Piece(275, 760));
     for (i = 0; i < whitePieces.size(); i++) {
         whitePieces[i]->setZValue(100);
         scene->addItem(whitePieces[i]);
     }
 
     //Adding black pieces
-    blackPieces.push_back(new Piece(475,750, false));
-    blackPieces.push_back(new Piece(525,750, false));
-    blackPieces.push_back(new Piece(575,750, false));
-    blackPieces.push_back(new Piece(625,750, false));
-    blackPieces.push_back(new Piece(675,750, false));
+    blackPieces.push_back(new Piece(475, 720, false));
+    blackPieces.push_back(new Piece(525, 720, false));
+    blackPieces.push_back(new Piece(575, 720, false));
+    blackPieces.push_back(new Piece(625, 720, false));
+    blackPieces.push_back(new Piece(675, 720, false));
+    blackPieces.push_back(new Piece(500, 760, false));
+    blackPieces.push_back(new Piece(550, 760, false));
+    blackPieces.push_back(new Piece(600, 760, false));
+    blackPieces.push_back(new Piece(650, 760, false));
     for (i = 0; i < blackPieces.size(); i++) {
         blackPieces[i]->setZValue(100);
         scene->addItem(blackPieces[i]);
@@ -104,7 +112,7 @@ void Game::nextTurn()
 {
     deselectPiece(turnNumber, whiteTurn);
     if (!whiteTurn) {
-        turnNumber = (turnNumber + 1) % 5; //Will need to change for number of pieces
+        turnNumber = (turnNumber + 1) % 9;
     }
     whiteTurn = !whiteTurn;
     selectPiece(turnNumber, whiteTurn);
