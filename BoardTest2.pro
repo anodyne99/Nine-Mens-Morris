@@ -9,13 +9,17 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    game.cpp \
     main.cpp \
     board.cpp \
-    piece.cpp
+    piece.cpp \
+    space.cpp
 
 HEADERS += \
     board.h \
-    piece.h
+    game.h \
+    piece.h \
+    space.h
 
 FORMS +=
 

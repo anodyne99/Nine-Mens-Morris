@@ -6,6 +6,7 @@ Board::Board() {
 }
 
 void Board::paintEvent(QPaintEvent *event)
+/*Overloading virtual function to implement board appearance*/
 {
     QPainter painter(this);
 

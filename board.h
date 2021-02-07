@@ -1,8 +1,8 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <QMainWindow>
 #include <QPainter>
+#include <QMainWindow>
 
 class Board : public QWidget
 {
