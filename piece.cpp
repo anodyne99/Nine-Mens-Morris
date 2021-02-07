@@ -1,9 +1,8 @@
 #include "piece.h"
 
-Piece::Piece(int x, int y, bool white, bool movable)
+Piece::Piece(int x, int y, bool white)
 {
     rect = QRectF(x, y, 30, 30);
-    //setFlag(QGraphicsItem::ItemIsMovable, movable);
     whitepc = white;
     inPlay = false;
     inSpace = nullptr;

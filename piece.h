@@ -10,7 +10,7 @@ class Piece : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
-    Piece(int x, int y, bool white = true, bool movable = true);
+    Piece(int x, int y, bool white = true);
     void paint(QPainter * painter, const QStyleOptionGraphicsItem *option = 0, QWidget *widget = 0);
     QRectF boundingRect() const;
 private:
