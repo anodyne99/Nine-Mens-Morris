@@ -5,6 +5,7 @@ Space::Space(int x, int y)
     rect = QRectF(x,y,20,20);
     setAcceptHoverEvents(true);
     hover = false;
+    occupied = false;
 }
 
 QRectF Space::boundingRect() const
@@ -25,7 +26,9 @@ void Space::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 void Space::mousePressEvent(QGraphicsSceneMouseEvent *event)
 /*Signals mouse clicked on space*/
 {
-    emit clicked(rect);
+    if (!occupied) {
+        emit clicked(rect, this);
+    }
 }
 
 void Space::hoverEnterEvent(QGraphicsSceneHoverEvent *event)

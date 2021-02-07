@@ -1,5 +1,8 @@
 #ifndef PIECE_H
 #define PIECE_H
+
+#include "space.h"
+
 #include <QGraphicsItem>
 #include <QPainter>
 
@@ -12,11 +15,13 @@ public:
     QRectF boundingRect() const;
 private:
     QRectF rect;
+    Space * inSpace;
     bool whitepc;
+    bool inPlay;
 signals:
     void turnTaken();
 private slots:
-    void moved(QRectF rect);
+    void moved(QRectF rect, Space * space);
 };
 
 #endif // PIECE_H

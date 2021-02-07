@@ -73,11 +73,11 @@ void Game::selectPiece(int pieceNumber, bool white)
     unsigned int i;
     for (i = 0; i < spaceList.size(); i++) {
         if (white) {
-            connect(spaceList[i], SIGNAL(clicked(QRectF)), whitePieces[pieceNumber], SLOT(moved(QRectF)));
+            connect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), whitePieces[pieceNumber], SLOT(moved(QRectF, Space*)));
             connect(whitePieces[pieceNumber], SIGNAL(turnTaken()), this, SLOT(nextTurn()));
         }
         else {
-            connect(spaceList[i], SIGNAL(clicked(QRectF)), blackPieces[pieceNumber], SLOT(moved(QRectF)));
+            connect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), blackPieces[pieceNumber], SLOT(moved(QRectF, Space*)));
             connect(blackPieces[pieceNumber], SIGNAL(turnTaken()), this, SLOT(nextTurn()));
         }
     }
@@ -89,11 +89,11 @@ void Game::deselectPiece(int pieceNumber, bool white)
     unsigned int i;
     for (i = 0; i < spaceList.size(); i++) {
         if (white) {
-            disconnect(spaceList[i], SIGNAL(clicked(QRectF)), whitePieces[pieceNumber], SLOT(moved(QRectF)));
+            disconnect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), whitePieces[pieceNumber], SLOT(moved(QRectF, Space*)));
             disconnect(whitePieces[pieceNumber], SIGNAL(turnTaken()), this, SLOT(nextTurn()));
         }
         else {
-            disconnect(spaceList[i], SIGNAL(clicked(QRectF)), blackPieces[pieceNumber], SLOT(moved(QRectF)));
+            disconnect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), blackPieces[pieceNumber], SLOT(moved(QRectF, Space *)));
             disconnect(blackPieces[pieceNumber], SIGNAL(turnTaken()), this, SLOT(nextTurn()));
         }
     }
