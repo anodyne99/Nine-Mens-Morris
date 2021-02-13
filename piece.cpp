@@ -34,21 +34,23 @@ QRectF Piece::boundingRect() const {
 void Piece::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 /*Action taken when piece clicked*/
     if (selectEnabled) {
-        emit clicked(this);
+        emit clickSelect(this);
     }
 }
 
 void Piece::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+/*Change appearance when mouse enters rect*/
     hover = true;
     update();
 }
 
 void Piece::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+/*Change appearance when mouse leaves rect*/
     hover = false;
     update();
 }
 
-void Piece::moved(QRectF rect, Space *space) {
+void Piece::moved(Space *space) {
 /*Slot to move piece when space clicked and signal turn taken*/
     if (inPlay) {
         inSpace->setOccupied(false);
@@ -57,8 +59,8 @@ void Piece::moved(QRectF rect, Space *space) {
     }
     inSpace = space;
     space->setOccupied(true);
-    setPos(rect.x() / 2 - 2.5, rect.y() / 2 - 2.5);
-    this->rect = QRectF(rect.x() / 2 - 2.5, rect.y() / 2 - 2.5, 30, 30);
+    setPos(space->boundingRect().x() / 2 - 2.5, space->boundingRect().y() / 2 - 2.5);
+    this->rect = QRectF(space->boundingRect().x() / 2 - 2.5, space->boundingRect().y() / 2 - 2.5, 30, 30);
     update();
     emit turnTaken(this);
 }

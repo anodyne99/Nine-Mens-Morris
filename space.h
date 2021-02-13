@@ -23,7 +23,7 @@ private:
     bool validMove;
     QRectF rect;
 signals:
-    void clicked(QRectF rect, Space * space);
+    void clicked(Space * space);
 };
 
 #endif // SPACE_H

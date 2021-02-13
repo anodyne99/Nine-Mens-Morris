@@ -40,7 +40,7 @@ private:
 signals:
 
 private slots:
-    void pieceClickAction(Piece *piece);
+    void pieceSelectAction(Piece *piece);
     void nextTurn(Piece *piece);
 
 };

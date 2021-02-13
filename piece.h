@@ -30,10 +30,10 @@ protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 signals:
-    void clicked(Piece *piece);
+    void clickSelect(Piece *piece);
     void turnTaken(Piece *piece);
 private slots:
-    void moved(QRectF rect, Space * space);
+    void moved(Space *space);
 };
 
 #endif // PIECE_H

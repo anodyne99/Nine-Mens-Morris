@@ -115,7 +115,7 @@ void Game::selectPiece(Piece *piece) {
     unsigned int i;
     connect(piece, SIGNAL(turnTaken(Piece*)), this, SLOT(nextTurn(Piece*)));
     for (i = 0; i < spaceList.size(); i++) {
-        connect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), piece, SLOT(moved(QRectF, Space*)));
+        connect(spaceList[i], SIGNAL(clicked(Space*)), piece, SLOT(moved(Space*)));
     }
     piece->setSelected(true);
     piece->update();
@@ -126,7 +126,7 @@ void Game::deselectPiece(Piece *piece) {
     unsigned int i;
     disconnect(piece, SIGNAL(turnTaken(Piece*)), this, SLOT(nextTurn(Piece*)));
     for (i = 0; i < spaceList.size(); i++) {
-        disconnect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), piece, SLOT(moved(QRectF, Space*)));
+        disconnect(spaceList[i], SIGNAL(clicked(Space*)), piece, SLOT(moved(Space*)));
     }
     piece->setSelected(false);
     piece->update();
@@ -137,12 +137,12 @@ void Game::enableSelectPiece() {
     unsigned int i;
     if (whiteTurn) {
         for (i = 0; i < whitePieces.size(); i++) {
-            connect(whitePieces[i], SIGNAL(clicked(Piece*)), this, SLOT(pieceClickAction(Piece*)));
+            connect(whitePieces[i], SIGNAL(clickSelect(Piece*)), this, SLOT(pieceSelectAction(Piece*)));
             whitePieces[i]->setSelectable(true);
         }
     } else {
         for (i = 0; i < blackPieces.size(); i++) {
-            connect(blackPieces[i], SIGNAL(clicked(Piece*)), this, SLOT(pieceClickAction(Piece*)));
+            connect(blackPieces[i], SIGNAL(clickSelect(Piece*)), this, SLOT(pieceSelectAction(Piece*)));
             blackPieces[i]->setSelectable(true);
         }
     }
@@ -153,18 +153,18 @@ void Game::disableSelectPiece() {
     unsigned int i;
     if (whiteTurn) {
         for (i = 0; i < whitePieces.size(); i++) {
-            disconnect(whitePieces[i], SIGNAL(clicked(Piece*)), this, SLOT(pieceClickAction(Piece*)));
+            disconnect(whitePieces[i], SIGNAL(clickSelect(Piece*)), this, SLOT(pieceSelectAction(Piece*)));
             whitePieces[i]->setSelectable(false);
         }
     } else {
         for (i = 0; i < blackPieces.size(); i++) {
-            disconnect(blackPieces[i], SIGNAL(clicked(Piece*)), this, SLOT(pieceClickAction(Piece*)));
+            disconnect(blackPieces[i], SIGNAL(clickSelect(Piece*)), this, SLOT(pieceSelectAction(Piece*)));
             blackPieces[i]->setSelectable(false);
         }
     }
 }
 
-void Game::pieceClickAction(Piece *piece) {
+void Game::pieceSelectAction(Piece *piece) {
 /*Slot for action taken when selectable piece clicked*/
     unsigned int i;
     if (whiteTurn) {
