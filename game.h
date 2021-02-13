@@ -9,8 +9,7 @@
 #include <QObject>
 #include <QGraphicsScene>
 
-class Game : public QObject
-{
+class Game : public QObject {
     Q_OBJECT
 public:
     Game(QGraphicsScene * scene);
@@ -19,16 +18,30 @@ public:
     std::vector<Piece*> whitePieces;
     std::vector<Piece*> blackPieces;
 
+    int getSpaceIndex(Space *space);
+    void setAdjacentSpaces(Piece *piece, bool value);
+    void setAllSpaceValidity(bool value);
+
+    void selectPiece(Piece * piece);
+    void deselectPiece(Piece * piece);
+    void enableSelectPiece();
+    void disableSelectPiece();
+
+private:
     bool whiteTurn;
     int turnNumber;
 
-    void selectPiece(int pieceNumber, bool white);
-    void deselectPiece(int pieceNumber, bool white);
+    bool phaseOneComplete;
+    bool whiteFlying;
+    bool blackFlying;
+
+    std::vector<std::vector<int>> adjacentList;
 
 signals:
 
 private slots:
-    void nextTurn();
+    void pieceClickAction(Piece *piece);
+    void nextTurn(Piece *piece);
 
 };
 

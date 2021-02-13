@@ -5,9 +5,8 @@ Board::Board() {
     resize(800,800);
 }
 
-void Board::paintEvent(QPaintEvent *event)
+void Board::paintEvent(QPaintEvent *event) {
 /*Overloading virtual function to implement board appearance*/
-{
     QPainter painter(this);
 
     painter.setBrush(QColor(200,200,115));

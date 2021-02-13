@@ -1,18 +1,20 @@
 #include "game.h"
 
-Game::Game(QGraphicsScene * scene)
-{
+Game::Game(QGraphicsScene * scene) {
     whiteTurn = true;
     turnNumber = 0;
+    phaseOneComplete = false;
+    whiteFlying = false;
+    blackFlying = false;
     unsigned int i;
 
     //Adding board widget to scene
     scene->addWidget(new Board);
 
     //Adding spaces
-    spaceList.push_back(new Space(90,640)); //Space A1
-    spaceList.push_back(new Space(90,340)); //Space A4
-    spaceList.push_back(new Space(90,40)); //Space A7
+    spaceList.push_back(new Space(90,640));  //Space A1
+    spaceList.push_back(new Space(90,340));  //Space A4
+    spaceList.push_back(new Space(90,40));   //Space A7
     spaceList.push_back(new Space(190,540)); //Space B2
     spaceList.push_back(new Space(190,340)); //Space B4
     spaceList.push_back(new Space(190,140)); //Space B6
@@ -24,7 +26,7 @@ Game::Game(QGraphicsScene * scene)
     spaceList.push_back(new Space(390,440)); //Space D3
     spaceList.push_back(new Space(390,240)); //Space D5
     spaceList.push_back(new Space(390,140)); //Space D6
-    spaceList.push_back(new Space(390,40)); //Space D7
+    spaceList.push_back(new Space(390,40));  //Space D7
     spaceList.push_back(new Space(490,440)); //Space E3
     spaceList.push_back(new Space(490,340)); //Space E4
     spaceList.push_back(new Space(490,240)); //Space E5
@@ -33,12 +35,18 @@ Game::Game(QGraphicsScene * scene)
     spaceList.push_back(new Space(590,140)); //Space F6
     spaceList.push_back(new Space(690,640)); //Space G1
     spaceList.push_back(new Space(690,340)); //Space G4
-    spaceList.push_back(new Space(690,40)); //Space G7
+    spaceList.push_back(new Space(690,40));  //Space G7
 
     for (i = 0; i < spaceList.size(); i++) {
         spaceList[i]->setZValue(90);
         scene->addItem(spaceList[i]);
     }
+
+    //Vector with indices of adjacent spaces
+    adjacentList = { {1,9}, {0,2,4}, {1,14}, {4,10}, {1,3,5,7}, {4,13},
+                     {7,11}, {4,6,8}, {7,12}, {0,10,21}, {3,9,11,18}, {6,10,15},
+                     {8,13,17}, {5,12,14,20}, {2,13,23}, {11,16}, {15,17,19}, {12,16},
+                     {10,19}, {16,18,20,22}, {13,19}, {9,22}, {19,21,23}, {14,22} };
 
     //Adding white pieces
     whitePieces.push_back(new Piece(100, 720));
@@ -71,49 +79,139 @@ Game::Game(QGraphicsScene * scene)
     }
 
     //Selecting first piece
-    selectPiece(turnNumber, whiteTurn);
+    selectPiece(whitePieces[0]);
 
 }
 
-void Game::selectPiece(int pieceNumber, bool white)
-/*Select a piece*/
-{
+int Game::getSpaceIndex(Space *space) {
+/*Returns index of given space in list of spaces*/
     unsigned int i;
     for (i = 0; i < spaceList.size(); i++) {
-        if (white) {
-            connect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), whitePieces[pieceNumber], SLOT(moved(QRectF, Space*)));
-            connect(whitePieces[pieceNumber], SIGNAL(turnTaken()), this, SLOT(nextTurn()));
+        if (spaceList[i] == space)
+            return i;
+    }
+    return -1;
+}
+
+void Game::setAdjacentSpaces(Piece *piece, bool value) {
+/*Sets adjacent spaces to piece as valid or invalid move*/
+    unsigned int i;
+    int index = getSpaceIndex(piece->getSpace());
+    for (i = 0; i < adjacentList[index].size(); i++) {
+        spaceList[adjacentList[index][i]]->setValid(value);
+    }
+}
+
+void Game::setAllSpaceValidity(bool value) {
+/*Sets all spaces as valid or invalid move*/
+    unsigned int i;
+    for (i = 0; i < spaceList.size(); i++) {
+        spaceList[i]->setValid(value);
+    }
+}
+
+void Game::selectPiece(Piece *piece) {
+/*Selects a piece*/
+    unsigned int i;
+    connect(piece, SIGNAL(turnTaken(Piece*)), this, SLOT(nextTurn(Piece*)));
+    for (i = 0; i < spaceList.size(); i++) {
+        connect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), piece, SLOT(moved(QRectF, Space*)));
+    }
+    piece->setSelected(true);
+    piece->update();
+}
+
+void Game::deselectPiece(Piece *piece) {
+/*Deselects a piece*/
+    unsigned int i;
+    disconnect(piece, SIGNAL(turnTaken(Piece*)), this, SLOT(nextTurn(Piece*)));
+    for (i = 0; i < spaceList.size(); i++) {
+        disconnect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), piece, SLOT(moved(QRectF, Space*)));
+    }
+    piece->setSelected(false);
+    piece->update();
+}
+
+void Game::enableSelectPiece() {
+/*Allows one side's pieces to be selected*/
+    unsigned int i;
+    if (whiteTurn) {
+        for (i = 0; i < whitePieces.size(); i++) {
+            connect(whitePieces[i], SIGNAL(clicked(Piece*)), this, SLOT(pieceClickAction(Piece*)));
+            whitePieces[i]->setSelectable(true);
         }
-        else {
-            connect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), blackPieces[pieceNumber], SLOT(moved(QRectF, Space*)));
-            connect(blackPieces[pieceNumber], SIGNAL(turnTaken()), this, SLOT(nextTurn()));
+    } else {
+        for (i = 0; i < blackPieces.size(); i++) {
+            connect(blackPieces[i], SIGNAL(clicked(Piece*)), this, SLOT(pieceClickAction(Piece*)));
+            blackPieces[i]->setSelectable(true);
         }
     }
 }
 
-void Game::deselectPiece(int pieceNumber, bool white)
-/*Deselect a piece*/
-{
+void Game::disableSelectPiece() {
+/*Disables piece selection for a side*/
     unsigned int i;
-    for (i = 0; i < spaceList.size(); i++) {
-        if (white) {
-            disconnect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), whitePieces[pieceNumber], SLOT(moved(QRectF, Space*)));
-            disconnect(whitePieces[pieceNumber], SIGNAL(turnTaken()), this, SLOT(nextTurn()));
+    if (whiteTurn) {
+        for (i = 0; i < whitePieces.size(); i++) {
+            disconnect(whitePieces[i], SIGNAL(clicked(Piece*)), this, SLOT(pieceClickAction(Piece*)));
+            whitePieces[i]->setSelectable(false);
         }
-        else {
-            disconnect(spaceList[i], SIGNAL(clicked(QRectF, Space*)), blackPieces[pieceNumber], SLOT(moved(QRectF, Space *)));
-            disconnect(blackPieces[pieceNumber], SIGNAL(turnTaken()), this, SLOT(nextTurn()));
+    } else {
+        for (i = 0; i < blackPieces.size(); i++) {
+            disconnect(blackPieces[i], SIGNAL(clicked(Piece*)), this, SLOT(pieceClickAction(Piece*)));
+            blackPieces[i]->setSelectable(false);
         }
     }
 }
 
-void Game::nextTurn()
+void Game::pieceClickAction(Piece *piece) {
+/*Slot for action taken when selectable piece clicked*/
+    unsigned int i;
+    if (whiteTurn) {
+        for (i = 0; i < whitePieces.size(); i++) {
+            if (whitePieces[i]->isSelected()) {
+                deselectPiece(whitePieces[i]);
+                setAdjacentSpaces(whitePieces[i], false);
+            }
+        }
+    } else {
+        for (i = 0; i < blackPieces.size(); i++) {
+            if (blackPieces[i]->isSelected()) {
+                deselectPiece(blackPieces[i]);
+                setAdjacentSpaces(blackPieces[i], false);
+            }
+        }
+    }
+    selectPiece(piece);
+    setAdjacentSpaces(piece, true);
+}
+
+void Game::nextTurn(Piece *piece) {
 /*Slot to change the player turn after a move*/
-{
-    deselectPiece(turnNumber, whiteTurn);
-    if (!whiteTurn) {
-        turnNumber = (turnNumber + 1) % 9;
+    deselectPiece(piece);
+    //PHASE ONE: Placing pieces
+    if (!phaseOneComplete) {
+        if (!whiteTurn)
+            turnNumber++;
+        whiteTurn = !whiteTurn;
+        if (turnNumber < 9) {
+            if (whiteTurn) {
+                selectPiece(whitePieces[turnNumber]);
+            } else {
+                selectPiece(blackPieces[turnNumber]);
+            }
+        } else {
+            phaseOneComplete = true;
+            setAllSpaceValidity(false);
+            enableSelectPiece();
+        }
+    //PHASE TWO: Moving pieces
+    } else {
+        setAdjacentSpaces(piece, false);
+        disableSelectPiece();
+        if (!whiteTurn)
+            turnNumber++;
+        whiteTurn = !whiteTurn;
+        enableSelectPiece();
     }
-    whiteTurn = !whiteTurn;
-    selectPiece(turnNumber, whiteTurn);
 }

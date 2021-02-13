@@ -8,8 +8,7 @@
 #include <QGraphicsView>
 #include <QGraphicsEllipseItem>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     QGraphicsScene scene;
     QGraphicsView view;
