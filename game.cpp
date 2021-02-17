@@ -17,6 +17,7 @@ Game::Game(QGraphicsScene *scene) {
                      {8,13,17}, {5,12,14,20}, {2,13,23}, {11,16}, {15,17,19}, {12,16},
                      {10,19}, {16,18,20,22}, {13,19}, {9,22}, {19,21,23}, {14,22} };
 
+    //Vector with indices of spaces that form a mill
     millList = { {0,1,2}, {2,14,23}, {21,22,23}, {0,9,21},
                  {3,4,5}, {5,13,20}, {18,19,20}, {3,10,18},
                  {6,7,8}, {8,12,17}, {15,16,17}, {6,11,15},
@@ -119,6 +120,7 @@ void Game::setAllSpaceValidity(bool value) {
 }
 
 bool Game::pieceInMill(Piece *piece) {
+/*Returns whther piece passed is in a mill*/
     unsigned int i;
     int index = getSpaceIndex(piece->getSpace());
     for (i = 0; i < currentMills.size(); i++) {
@@ -130,6 +132,7 @@ bool Game::pieceInMill(Piece *piece) {
 }
 
 void Game::checkForNewMill() {
+/*Updates list of mills and sets capture mode if new mill found*/
     unsigned int i;
     std::vector<int> newMills;
     for (i = 0; i < millList.size(); i++) {
@@ -146,6 +149,7 @@ void Game::checkForNewMill() {
 }
 
 void Game::checkForFlying() {
+/*Checks number of pieces in play and sets flying condition*/
     int count = 0;
     unsigned int i;
     if (whiteTurn) {
@@ -226,6 +230,7 @@ void Game::disableSelectPiece() {
 }
 
 void Game::enableCapturePiece() {
+/*Enables piece capture if not in mill or no other pieces left*/
     unsigned int i;
     int count = 0;
     captureMode = true;
@@ -265,6 +270,7 @@ void Game::enableCapturePiece() {
 }
 
 void Game::disableCapturePiece() {
+/*Disables piece capture for a side*/
     unsigned int i;
     captureMode = false;
     if (whiteTurn) {
@@ -281,6 +287,7 @@ void Game::disableCapturePiece() {
 }
 
 void Game::endTurn(Piece *piece) {
+/*Ends turn by deselecting and disabling selection*/
     deselectPiece(piece);
     if (phaseOneComplete) {
         disableSelectPiece();
@@ -288,6 +295,7 @@ void Game::endTurn(Piece *piece) {
 }
 
 void Game::startNewTurn() {
+/*Starts a new turn in accordance with game phase*/
     if (!whiteTurn)
         turnNumber++;
     whiteTurn = !whiteTurn;
@@ -310,6 +318,7 @@ void Game::startNewTurn() {
 }
 
 void Game::pieceCaptureAction(Piece *piece) {
+/*Slot for action taken when capturable piece clicked*/
     scene->removeItem(piece);
     piece->getSpace()->setOccupied(false);
     piece->setCaptured(true);
