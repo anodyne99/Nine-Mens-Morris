@@ -4,6 +4,7 @@ Space::Space(int x, int y) {
     rect = QRectF(x,y,20,20);
     setAcceptHoverEvents(true);
     hover = false;
+    white = true;
     occupied = false;
     validMove = true;
 }

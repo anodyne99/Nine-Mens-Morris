@@ -12,7 +12,11 @@ public:
     void paint(QPainter * painter, const QStyleOptionGraphicsItem *option = 0, QWidget *widget = 0);
 
     void setOccupied(bool value) { occupied = value; }
+    void setWhite(bool value) { white = value; }
     void setValid(bool value) { validMove = value; }
+
+    bool hasWhitePiece() { return (occupied && white); }
+    bool hasBlackPiece() { return (occupied && !white); }
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
@@ -20,6 +24,7 @@ protected:
 private:
     bool hover;
     bool occupied;
+    bool white;
     bool validMove;
     QRectF rect;
 signals:

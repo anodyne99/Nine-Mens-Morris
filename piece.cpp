@@ -9,6 +9,8 @@ Piece::Piece(int x, int y, bool white) {
     inSpace = nullptr;
     selectEnabled = false;
     selected = false;
+    captureEnabled = false;
+    captured = false;
 }
 
 void Piece::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -20,7 +22,7 @@ void Piece::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
     if (selected)
         painter->setBrush(Qt::green);
-    if (hover && selectEnabled) {
+    if ((hover && selectEnabled) || (hover && captureEnabled)) {
         painter->setPen(Qt::green);
     }
     painter->drawEllipse(rect);
@@ -33,7 +35,9 @@ QRectF Piece::boundingRect() const {
 
 void Piece::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 /*Action taken when piece clicked*/
-    if (selectEnabled) {
+    if (captureEnabled) {
+        emit clickCapture(this);
+    } else if (selectEnabled) {
         emit clickSelect(this);
     }
 }
@@ -59,6 +63,7 @@ void Piece::moved(Space *space) {
     }
     inSpace = space;
     space->setOccupied(true);
+    space->setWhite(whitePiece);
     setPos(space->boundingRect().x() / 2 - 2.5, space->boundingRect().y() / 2 - 2.5);
     this->rect = QRectF(space->boundingRect().x() / 2 - 2.5, space->boundingRect().y() / 2 - 2.5, 30, 30);
     update();

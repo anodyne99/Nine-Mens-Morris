@@ -1,12 +1,26 @@
 #include "game.h"
 
-Game::Game(QGraphicsScene * scene) {
+Game::Game(QGraphicsScene *scene) {
     whiteTurn = true;
     turnNumber = 0;
     phaseOneComplete = false;
+    captureMode = false;
     whiteFlying = false;
     blackFlying = false;
     unsigned int i;
+    currentMills = {};
+    this->scene = scene;
+
+    //Vector with indices of adjacent spaces
+    adjacentList = { {1,9}, {0,2,4}, {1,14}, {4,10}, {1,3,5,7}, {4,13},
+                     {7,11}, {4,6,8}, {7,12}, {0,10,21}, {3,9,11,18}, {6,10,15},
+                     {8,13,17}, {5,12,14,20}, {2,13,23}, {11,16}, {15,17,19}, {12,16},
+                     {10,19}, {16,18,20,22}, {13,19}, {9,22}, {19,21,23}, {14,22} };
+
+    millList = { {0,1,2}, {2,14,23}, {21,22,23}, {0,9,21},
+                 {3,4,5}, {5,13,20}, {18,19,20}, {3,10,18},
+                 {6,7,8}, {8,12,17}, {15,16,17}, {6,11,15},
+                 {1,4,7}, {12,13,14}, {16,19,22}, {9,10,11} };
 
     //Adding board widget to scene
     scene->addWidget(new Board);
@@ -41,12 +55,6 @@ Game::Game(QGraphicsScene * scene) {
         spaceList[i]->setZValue(90);
         scene->addItem(spaceList[i]);
     }
-
-    //Vector with indices of adjacent spaces
-    adjacentList = { {1,9}, {0,2,4}, {1,14}, {4,10}, {1,3,5,7}, {4,13},
-                     {7,11}, {4,6,8}, {7,12}, {0,10,21}, {3,9,11,18}, {6,10,15},
-                     {8,13,17}, {5,12,14,20}, {2,13,23}, {11,16}, {15,17,19}, {12,16},
-                     {10,19}, {16,18,20,22}, {13,19}, {9,22}, {19,21,23}, {14,22} };
 
     //Adding white pieces
     whitePieces.push_back(new Piece(100, 720));
@@ -110,6 +118,55 @@ void Game::setAllSpaceValidity(bool value) {
     }
 }
 
+bool Game::pieceInMill(Piece *piece) {
+    unsigned int i;
+    int index = getSpaceIndex(piece->getSpace());
+    for (i = 0; i < currentMills.size(); i++) {
+        if (millList[currentMills[i]][0] == index || millList[currentMills[i]][1] == index || millList[currentMills[i]][2] == index) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Game::checkForNewMill() {
+    unsigned int i;
+    std::vector<int> newMills;
+    for (i = 0; i < millList.size(); i++) {
+        if (spaceList[millList[i][0]]->hasWhitePiece() && spaceList[millList[i][1]]->hasWhitePiece() && spaceList[millList[i][2]]->hasWhitePiece()) {
+            newMills.push_back(i);
+        } else if (spaceList[millList[i][0]]->hasBlackPiece() && spaceList[millList[i][1]]->hasBlackPiece() && spaceList[millList[i][2]]->hasBlackPiece()) {
+            newMills.push_back(i);
+        }
+    }
+    if (newMills != currentMills && newMills.size() >= currentMills.size()) {
+        enableCapturePiece();
+    }
+    currentMills = newMills;
+}
+
+void Game::checkForFlying() {
+    int count = 0;
+    unsigned int i;
+    if (whiteTurn) {
+        for (i = 0; i < whitePieces.size(); i++) {
+            if (!whitePieces[i]->isCaptured())
+                count++;
+        }
+        if (count == 3) {
+            whiteFlying = true;
+        }
+    } else {
+        for (i = 0; i < blackPieces.size(); i++) {
+            if (!blackPieces[i]->isCaptured())
+                count++;
+        }
+        if (count == 3) {
+            blackFlying = true;
+        }
+    }
+}
+
 void Game::selectPiece(Piece *piece) {
 /*Selects a piece*/
     unsigned int i;
@@ -146,6 +203,9 @@ void Game::enableSelectPiece() {
             blackPieces[i]->setSelectable(true);
         }
     }
+    if ((whiteTurn && whiteFlying) || (!whiteTurn && blackFlying)) {
+        setAllSpaceValidity(true);
+    }
 }
 
 void Game::disableSelectPiece() {
@@ -162,6 +222,100 @@ void Game::disableSelectPiece() {
             blackPieces[i]->setSelectable(false);
         }
     }
+    setAllSpaceValidity(false);
+}
+
+void Game::enableCapturePiece() {
+    unsigned int i;
+    int count = 0;
+    captureMode = true;
+    if (whiteTurn) {
+        for (i = 0; i < blackPieces.size(); i++) {
+            if (!pieceInMill(blackPieces[i]) && !blackPieces[i]->isCaptured() && blackPieces[i]->isInPlay()) {
+                connect(blackPieces[i], SIGNAL(clickCapture(Piece*)), this, SLOT(pieceCaptureAction(Piece*)));
+                blackPieces[i]->setCaptureEnabled(true);
+                count++;
+            }
+        }
+        if (count == 0) {
+            for (i = 0; i < blackPieces.size(); i++) {
+                if (blackPieces[i]->isInPlay()) {
+                    connect(blackPieces[i], SIGNAL(clickCapture(Piece*)), this, SLOT(pieceCaptureAction(Piece*)));
+                    blackPieces[i]->setCaptureEnabled(true);
+                }
+            }
+        }
+    } else {
+        for (i = 0; i < whitePieces.size(); i++) {
+            if (!pieceInMill(whitePieces[i]) && !whitePieces[i]->isCaptured() && whitePieces[i]->isInPlay()) {
+                connect(whitePieces[i], SIGNAL(clickCapture(Piece*)), this, SLOT(pieceCaptureAction(Piece*)));
+                whitePieces[i]->setCaptureEnabled(true);
+                count++;
+            }
+        }
+        if (count == 0) {
+            for (i = 0; i < whitePieces.size(); i++) {
+                if (whitePieces[i]->isInPlay()) {
+                    connect(whitePieces[i], SIGNAL(clickCapture(Piece*)), this, SLOT(pieceCaptureAction(Piece*)));
+                    whitePieces[i]->setCaptureEnabled(true);
+                }
+            }
+        }
+    }
+}
+
+void Game::disableCapturePiece() {
+    unsigned int i;
+    captureMode = false;
+    if (whiteTurn) {
+        for (i = 0; i < blackPieces.size(); i++) {
+            disconnect(blackPieces[i], SIGNAL(clickCapture(Piece*)), this, SLOT(pieceCaptureAction(Piece*)));
+            blackPieces[i]->setCaptureEnabled(false);
+        }
+    } else {
+        for (i = 0; i < whitePieces.size(); i++) {
+            disconnect(whitePieces[i], SIGNAL(clickCapture(Piece*)), this, SLOT(pieceCaptureAction(Piece*)));
+            whitePieces[i]->setCaptureEnabled(false);
+        }
+    }
+}
+
+void Game::endTurn(Piece *piece) {
+    deselectPiece(piece);
+    if (phaseOneComplete) {
+        disableSelectPiece();
+    }
+}
+
+void Game::startNewTurn() {
+    if (!whiteTurn)
+        turnNumber++;
+    whiteTurn = !whiteTurn;
+    if (!phaseOneComplete) {
+        if (turnNumber < 9) {
+            if (whiteTurn) {
+                selectPiece(whitePieces[turnNumber]);
+            } else {
+                selectPiece(blackPieces[turnNumber]);
+            }
+        } else {
+            phaseOneComplete = true;
+            setAllSpaceValidity(false);
+            enableSelectPiece();
+        }
+    } else {
+        checkForFlying();
+        enableSelectPiece();
+    }
+}
+
+void Game::pieceCaptureAction(Piece *piece) {
+    scene->removeItem(piece);
+    piece->getSpace()->setOccupied(false);
+    piece->setCaptured(true);
+    disableCapturePiece();
+    checkForNewMill();
+    startNewTurn();
 }
 
 void Game::pieceSelectAction(Piece *piece) {
@@ -188,30 +342,9 @@ void Game::pieceSelectAction(Piece *piece) {
 
 void Game::nextTurn(Piece *piece) {
 /*Slot to change the player turn after a move*/
-    deselectPiece(piece);
-    //PHASE ONE: Placing pieces
-    if (!phaseOneComplete) {
-        if (!whiteTurn)
-            turnNumber++;
-        whiteTurn = !whiteTurn;
-        if (turnNumber < 9) {
-            if (whiteTurn) {
-                selectPiece(whitePieces[turnNumber]);
-            } else {
-                selectPiece(blackPieces[turnNumber]);
-            }
-        } else {
-            phaseOneComplete = true;
-            setAllSpaceValidity(false);
-            enableSelectPiece();
-        }
-    //PHASE TWO: Moving pieces
-    } else {
-        setAdjacentSpaces(piece, false);
-        disableSelectPiece();
-        if (!whiteTurn)
-            turnNumber++;
-        whiteTurn = !whiteTurn;
-        enableSelectPiece();
-    }
+    endTurn(piece);
+    checkForNewMill();
+    if (!captureMode)
+        startNewTurn();
+
 }

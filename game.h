@@ -14,32 +14,45 @@ class Game : public QObject {
 public:
     Game(QGraphicsScene * scene);
 
-    std::vector<Space*> spaceList;
-    std::vector<Piece*> whitePieces;
-    std::vector<Piece*> blackPieces;
-
     int getSpaceIndex(Space *space);
     void setAdjacentSpaces(Piece *piece, bool value);
     void setAllSpaceValidity(bool value);
+    bool pieceInMill(Piece *piece);
 
-    void selectPiece(Piece * piece);
-    void deselectPiece(Piece * piece);
+    void checkForNewMill();
+    void checkForFlying();
+
+    void selectPiece(Piece *piece);
+    void deselectPiece(Piece *piece);
     void enableSelectPiece();
     void disableSelectPiece();
+    void enableCapturePiece();
+    void disableCapturePiece();
+
+    void endTurn(Piece *piece);
+    void startNewTurn();
 
 private:
+    QGraphicsScene *scene;
     bool whiteTurn;
     int turnNumber;
 
     bool phaseOneComplete;
+    bool captureMode;
     bool whiteFlying;
     bool blackFlying;
 
     std::vector<std::vector<int>> adjacentList;
+    std::vector<std::vector<int>> millList;
+    std::vector<int> currentMills;
+    std::vector<Space*> spaceList;
+    std::vector<Piece*> whitePieces;
+    std::vector<Piece*> blackPieces;
 
 signals:
 
 private slots:
+    void pieceCaptureAction(Piece *piece);
     void pieceSelectAction(Piece *piece);
     void nextTurn(Piece *piece);
 
