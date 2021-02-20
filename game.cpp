@@ -153,14 +153,6 @@ void Game::checkForFlying() {
     int count = 0;
     unsigned int i;
     if (whiteTurn) {
-        for (i = 0; i < whitePieces.size(); i++) {
-            if (!whitePieces[i]->isCaptured())
-                count++;
-        }
-        if (count == 3) {
-            whiteFlying = true;
-        }
-    } else {
         for (i = 0; i < blackPieces.size(); i++) {
             if (!blackPieces[i]->isCaptured())
                 count++;
@@ -168,6 +160,92 @@ void Game::checkForFlying() {
         if (count == 3) {
             blackFlying = true;
         }
+    } else {
+        for (i = 0; i < whitePieces.size(); i++) {
+            if (!whitePieces[i]->isCaptured())
+                count++;
+        }
+        if (count == 3) {
+            whiteFlying = true;
+        }
+    }
+}
+
+void Game::checkForPieceVictory() {
+/*Checks for victory conditions*/
+    int count = 0;
+    unsigned int i;
+    if (whiteTurn) {
+        for (i = 0; i < blackPieces.size(); i++) {
+            if (!blackPieces[i]->isCaptured()) {
+                count++;
+            }
+        }
+        if (count < 3) {
+            whiteVictory = true;
+        }
+    } else {
+        for (i = 0; i < whitePieces.size(); i++) {
+            if (!whitePieces[i]->isCaptured()) {
+                count++;
+            }
+        }
+        if (count < 3) {
+            blackVictory = true;
+        }
+    }
+}
+
+void Game::checkForMovesVictory() {
+    unsigned int i;
+    unsigned int j;
+    std::vector<int> adjacentSpaces;
+    int count = 0;
+    if (whiteTurn) {
+        for (i = 0; i < blackPieces.size(); i++) {
+            if (!blackPieces[i]->isCaptured()) {
+                adjacentSpaces = adjacentList[getSpaceIndex(blackPieces[i]->getSpace())];
+                for (j = 0; j < adjacentSpaces.size(); j++) {
+                    if (!spaceList[adjacentSpaces[j]]->isOccupied()) {
+                        count++;
+                    }
+                }
+            }
+        }
+    } else {
+        for (i = 0; i < whitePieces.size(); i++) {
+            if (!whitePieces[i]->isCaptured()) {
+                adjacentSpaces = adjacentList[getSpaceIndex(whitePieces[i]->getSpace())];
+                for (j = 0; j < adjacentSpaces.size(); j++) {
+                    if (!spaceList[adjacentSpaces[j]]->isOccupied()) {
+                        count++;
+                    }
+                }
+            }
+        }
+    }
+    if (count == 0) {
+        if (whiteTurn && !blackFlying) {
+            whiteVictory = true;
+        }
+        else if (!whiteTurn && !whiteFlying) {
+            blackVictory = true;
+        }
+    }
+}
+
+void Game::evaluateVictoryConditions() {
+    if (phaseOneComplete) {
+        checkForMovesVictory();
+        checkForPieceVictory();
+    }
+    if (whiteVictory) {
+        scene->addText("White Wins!");
+    } else if (blackVictory) {
+        scene->addText("Black Wins!");
+    }
+    else {
+        startNewTurn();
     }
 }
 
@@ -312,7 +390,6 @@ void Game::startNewTurn() {
             enableSelectPiece();
         }
     } else {
-        checkForFlying();
         enableSelectPiece();
     }
 }
@@ -324,7 +401,8 @@ void Game::pieceCaptureAction(Piece *piece) {
     piece->setCaptured(true);
     disableCapturePiece();
     checkForNewMill();
-    startNewTurn();
+    checkForFlying();
+    evaluateVictoryConditions();
 }
 
 void Game::pieceSelectAction(Piece *piece) {
@@ -353,7 +431,7 @@ void Game::nextTurn(Piece *piece) {
 /*Slot to change the player turn after a move*/
     endTurn(piece);
     checkForNewMill();
-    if (!captureMode)
-        startNewTurn();
-
+    if (!captureMode) {
+        evaluateVictoryConditions();
+    }
 }

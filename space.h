@@ -11,6 +11,7 @@ public:
     QRectF boundingRect() const;
     void paint(QPainter * painter, const QStyleOptionGraphicsItem *option = 0, QWidget *widget = 0);
 
+    bool isOccupied() { return occupied; }
     void setOccupied(bool value) { occupied = value; }
     void setWhite(bool value) { white = value; }
     void setValid(bool value) { validMove = value; }

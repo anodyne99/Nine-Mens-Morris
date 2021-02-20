@@ -21,6 +21,9 @@ public:
 
     void checkForNewMill();
     void checkForFlying();
+    void checkForPieceVictory();
+    void checkForMovesVictory();
+    void evaluateVictoryConditions();
 
     void selectPiece(Piece *piece);
     void deselectPiece(Piece *piece);
@@ -40,7 +43,9 @@ private:
     bool phaseOneComplete;
     bool captureMode;
     bool whiteFlying;
+    bool whiteVictory;
     bool blackFlying;
+    bool blackVictory;
 
     std::vector<std::vector<int>> adjacentList;
     std::vector<std::vector<int>> millList;
