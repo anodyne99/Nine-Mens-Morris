@@ -6,7 +6,9 @@ Game::Game(QGraphicsScene *scene) {
     phaseOneComplete = false;
     captureMode = false;
     whiteFlying = false;
+    whiteVictory = false;
     blackFlying = false;
+    blackVictory = false;
     unsigned int i;
     currentMills = {};
     this->scene = scene;
@@ -24,7 +26,8 @@ Game::Game(QGraphicsScene *scene) {
                  {1,4,7}, {12,13,14}, {16,19,22}, {9,10,11} };
 
     //Adding board widget to scene
-    scene->addWidget(new Board);
+    board = new Board();
+    scene->addWidget(board);
 
     //Adding spaces
     spaceList.push_back(new Space(90,640));  //Space A1
@@ -147,6 +150,7 @@ void Game::checkForNewMill() {
         enableCapturePiece();
     }
     currentMills = newMills;
+    board->updateMillLines(currentMills);
 }
 
 void Game::checkForFlying() {
