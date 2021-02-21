@@ -37,6 +37,7 @@ public:
 
 private:
     QGraphicsScene *scene;
+    Board *board;
     bool whiteTurn;
     int turnNumber;
 
