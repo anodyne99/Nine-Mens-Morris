@@ -5,13 +5,15 @@
 
 #include <QGraphicsItem>
 #include <QPainter>
+#include <QPaintEvent>
 
 class Piece : public QObject, public QGraphicsItem {
     Q_OBJECT
 public:
     Piece(int x, int y, bool white = true);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option = 0, QWidget *widget = 0);
-    QRectF boundingRect() const;
+    QRectF boundingRect() const { return rectangle; }
+    Space *getSpace() { return inSpace; }
 
     void setSelectable(bool value) { selectEnabled = value; }
     void setSelected(bool value) { selected = value; }
@@ -20,9 +22,9 @@ public:
     void setCaptured(bool value) { captured = value; }
     bool isCaptured() { return captured; }
     bool isInPlay() { return inPlay; }
-    Space *getSpace() { return inSpace; }
+
 private:
-    QRectF rect;
+    QRectF rectangle;
     Space *inSpace;
     bool whitePiece;
     bool hover;

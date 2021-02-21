@@ -8,7 +8,7 @@ class Space : public QObject, public QGraphicsItem {
     Q_OBJECT
 public:
     Space(int x, int y);
-    QRectF boundingRect() const;
+    QRectF boundingRect() const { return rectangle; }
     void paint(QPainter * painter, const QStyleOptionGraphicsItem *option = 0, QWidget *widget = 0);
 
     bool isOccupied() { return occupied; }
@@ -27,7 +27,7 @@ private:
     bool occupied;
     bool white;
     bool validMove;
-    QRectF rect;
+    QRectF rectangle;
 signals:
     void clicked(Space * space);
 };

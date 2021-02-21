@@ -5,7 +5,6 @@
 #include <QMainWindow>
 
 class Board : public QWidget {
-    Q_OBJECT
 
 public:
     Board();

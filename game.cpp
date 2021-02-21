@@ -96,8 +96,9 @@ int Game::getSpaceIndex(Space *space) {
 /*Returns index of given space in list of spaces*/
     unsigned int i;
     for (i = 0; i < spaceList.size(); i++) {
-        if (spaceList[i] == space)
+        if (spaceList[i] == space) {
             return i;
+        }
     }
     return -1;
 }
@@ -154,16 +155,18 @@ void Game::checkForFlying() {
     unsigned int i;
     if (whiteTurn) {
         for (i = 0; i < blackPieces.size(); i++) {
-            if (!blackPieces[i]->isCaptured())
+            if (!blackPieces[i]->isCaptured()) {
                 count++;
+            }
         }
         if (count == 3) {
             blackFlying = true;
         }
     } else {
         for (i = 0; i < whitePieces.size(); i++) {
-            if (!whitePieces[i]->isCaptured())
+            if (!whitePieces[i]->isCaptured()) {
                 count++;
+            }
         }
         if (count == 3) {
             whiteFlying = true;
@@ -172,7 +175,7 @@ void Game::checkForFlying() {
 }
 
 void Game::checkForPieceVictory() {
-/*Checks for victory conditions*/
+/*Checks if opponent has less than three pieces*/
     int count = 0;
     unsigned int i;
     if (whiteTurn) {
@@ -197,6 +200,7 @@ void Game::checkForPieceVictory() {
 }
 
 void Game::checkForMovesVictory() {
+/*Checks if opponent has no more moves*/
     unsigned int i;
     unsigned int j;
     std::vector<int> adjacentSpaces;
@@ -235,6 +239,7 @@ void Game::checkForMovesVictory() {
 }
 
 void Game::evaluateVictoryConditions() {
+/*Evaluates if the game has ended or else starts a new turn*/
     if (phaseOneComplete) {
         checkForMovesVictory();
         checkForPieceVictory();
@@ -374,8 +379,9 @@ void Game::endTurn(Piece *piece) {
 
 void Game::startNewTurn() {
 /*Starts a new turn in accordance with game phase*/
-    if (!whiteTurn)
+    if (!whiteTurn) {
         turnNumber++;
+    }
     whiteTurn = !whiteTurn;
     if (!phaseOneComplete) {
         if (turnNumber < 9) {
