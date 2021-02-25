@@ -10,20 +10,20 @@ CONFIG += c++11
 
 SOURCES += \
     NineMensMorrisTest/boardtest.cpp \
-    board.cpp \
-    button.cpp \
-    game.cpp \
-    main.cpp \
-    piece.cpp \
-    space.cpp
+    src/board.cpp \
+    src/button.cpp \
+    src/game.cpp \
+    src/main.cpp \
+    src/piece.cpp \
+    src/space.cpp
 
 HEADERS += \
     NineMensMorrisTest/boardtest.h \
-    board.h \
-    button.h \
-    game.h \
-    piece.h \
-    space.h
+    include/board.h \
+    include/button.h \
+    include/game.h \
+    include/piece.h \
+    include/space.h
 
 FORMS +=
 
