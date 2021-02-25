@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     board.cpp \
+    button.cpp \
     game.cpp \
     main.cpp \
     piece.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
 
 HEADERS += \
     board.h \
+    button.h \
     game.h \
     piece.h \
     space.h
