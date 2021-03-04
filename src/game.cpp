@@ -1,6 +1,7 @@
 #include "include/game.h"
 
 Game::Game(QGraphicsScene *scene) {
+    //Initializing data members
     whiteTurn = true;
     turnNumber = 0;
     phaseOneComplete = false;
@@ -26,7 +27,7 @@ Game::Game(QGraphicsScene *scene) {
                  {1,4,7}, {12,13,14}, {16,19,22}, {9,10,11} };
 
     //Adding board widget to scene
-    board = new Board();
+    board = new Board;
     scene->addWidget(board);
 
     //Adding spaces
@@ -124,7 +125,7 @@ void Game::setAllSpaceValidity(bool value) {
 }
 
 bool Game::pieceInMill(Piece *piece) {
-/*Returns whther piece passed is in a mill*/
+/*Returns whether piece passed is in a mill*/
     unsigned int i;
     int index = getSpaceIndex(piece->getSpace());
     for (i = 0; i < currentMills.size(); i++) {
@@ -139,6 +140,7 @@ void Game::checkForNewMill() {
 /*Updates list of mills and sets capture mode if new mill found*/
     unsigned int i;
     std::vector<int> newMills;
+    //Iterate through sets of spaces that form mills and check if occupied by all white or black pieces
     for (i = 0; i < millList.size(); i++) {
         if (spaceList[millList[i][0]]->hasWhitePiece() && spaceList[millList[i][1]]->hasWhitePiece() && spaceList[millList[i][2]]->hasWhitePiece()) {
             newMills.push_back(i);
@@ -209,6 +211,7 @@ void Game::checkForMovesVictory() {
     unsigned int j;
     std::vector<int> adjacentSpaces;
     int count = 0;
+    //Counting the unoccupied spaces adjacent to black pieces
     if (whiteTurn) {
         for (i = 0; i < blackPieces.size(); i++) {
             if (!blackPieces[i]->isCaptured()) {
@@ -220,6 +223,7 @@ void Game::checkForMovesVictory() {
                 }
             }
         }
+    //Counting the unoccupied spaces adjacent to white pieces
     } else {
         for (i = 0; i < whitePieces.size(); i++) {
             if (!whitePieces[i]->isCaptured()) {
@@ -232,6 +236,7 @@ void Game::checkForMovesVictory() {
             }
         }
     }
+    //Victory if no adjacent spaces and not flying
     if (count == 0) {
         if (whiteTurn && !blackFlying) {
             whiteVictory = true;
@@ -262,6 +267,7 @@ void Game::selectPiece(Piece *piece) {
 /*Selects a piece*/
     unsigned int i;
     connect(piece, SIGNAL(turnTaken(Piece*)), this, SLOT(nextTurn(Piece*)));
+    //Iterates through space vector and connects the piece to all spaces
     for (i = 0; i < spaceList.size(); i++) {
         connect(spaceList[i], SIGNAL(clicked(Space*)), piece, SLOT(moved(Space*)));
     }
@@ -273,6 +279,7 @@ void Game::deselectPiece(Piece *piece) {
 /*Deselects a piece*/
     unsigned int i;
     disconnect(piece, SIGNAL(turnTaken(Piece*)), this, SLOT(nextTurn(Piece*)));
+    //Iterates through spaces and disconnects from piece
     for (i = 0; i < spaceList.size(); i++) {
         disconnect(spaceList[i], SIGNAL(clicked(Space*)), piece, SLOT(moved(Space*)));
     }
@@ -322,6 +329,7 @@ void Game::enableCapturePiece() {
     int count = 0;
     captureMode = true;
     if (whiteTurn) {
+        //First pass selects pieces not in a mill
         for (i = 0; i < blackPieces.size(); i++) {
             if (!pieceInMill(blackPieces[i]) && !blackPieces[i]->isCaptured() && blackPieces[i]->isInPlay()) {
                 connect(blackPieces[i], SIGNAL(clickCapture(Piece*)), this, SLOT(pieceCaptureAction(Piece*)));
@@ -329,6 +337,7 @@ void Game::enableCapturePiece() {
                 count++;
             }
         }
+        //Optional second pass if all pieces in mill, selects pieces in mill
         if (count == 0) {
             for (i = 0; i < blackPieces.size(); i++) {
                 if (blackPieces[i]->isInPlay()) {
@@ -338,6 +347,7 @@ void Game::enableCapturePiece() {
             }
         }
     } else {
+        //First pass selects pieces not in a mill
         for (i = 0; i < whitePieces.size(); i++) {
             if (!pieceInMill(whitePieces[i]) && !whitePieces[i]->isCaptured() && whitePieces[i]->isInPlay()) {
                 connect(whitePieces[i], SIGNAL(clickCapture(Piece*)), this, SLOT(pieceCaptureAction(Piece*)));
@@ -345,6 +355,7 @@ void Game::enableCapturePiece() {
                 count++;
             }
         }
+        //Optional second pass if all pieces in mill, selects pieces in mill
         if (count == 0) {
             for (i = 0; i < whitePieces.size(); i++) {
                 if (whitePieces[i]->isInPlay()) {
@@ -389,17 +400,20 @@ void Game::startNewTurn() {
     whiteTurn = !whiteTurn;
     if (!phaseOneComplete) {
         if (turnNumber < 9) {
+            //Selects the next unplayed piece in first phase of game
             if (whiteTurn) {
                 selectPiece(whitePieces[turnNumber]);
             } else {
                 selectPiece(blackPieces[turnNumber]);
             }
         } else {
+            //Ends first phase of game
             phaseOneComplete = true;
             setAllSpaceValidity(false);
             enableSelectPiece();
         }
     } else {
+        //Enables appropriate side to select and move a piece
         enableSelectPiece();
     }
 }
@@ -418,21 +432,28 @@ void Game::pieceCaptureAction(Piece *piece) {
 void Game::pieceSelectAction(Piece *piece) {
 /*Slot for action taken when selectable piece clicked*/
     unsigned int i;
+    //Iterates through white piece vector and deselects any previously selected pieces
     if (whiteTurn) {
         for (i = 0; i < whitePieces.size(); i++) {
             if (whitePieces[i]->isSelected()) {
                 deselectPiece(whitePieces[i]);
-                setAdjacentSpaces(whitePieces[i], false);
+                if (!whiteFlying) {
+                    setAdjacentSpaces(whitePieces[i], false);
+                }
             }
         }
+    //Iterates through black piece vector and deselects any previously selected pieces
     } else {
         for (i = 0; i < blackPieces.size(); i++) {
             if (blackPieces[i]->isSelected()) {
                 deselectPiece(blackPieces[i]);
-                setAdjacentSpaces(blackPieces[i], false);
+                if (!blackFlying) {
+                    setAdjacentSpaces(blackPieces[i], false);
+                }
             }
         }
     }
+    //Selects chosen piece and sets adjacent squares as valid moves
     selectPiece(piece);
     setAdjacentSpaces(piece, true);
 }
