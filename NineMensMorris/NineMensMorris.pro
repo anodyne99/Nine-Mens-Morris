@@ -16,7 +16,8 @@ SOURCES += \
     src/main.cpp \
     src/menu.cpp \
     src/piece.cpp \
-    src/space.cpp
+    src/space.cpp \
+    src/tutorial.cpp
 
 HEADERS += \
     include/board.h \
@@ -25,7 +26,8 @@ HEADERS += \
     include/gamemanager.h \
     include/menu.h \
     include/piece.h \
-    include/space.h
+    include/space.h \
+    include/tutorial.h
 
 FORMS +=
 
