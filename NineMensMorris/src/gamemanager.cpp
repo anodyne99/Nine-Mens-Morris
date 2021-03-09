@@ -10,7 +10,8 @@ GameManager::GameManager(){
     view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view.show();
 
-    connect(menu.returnPushButton(),SIGNAL(clicked()),this,SLOT(switchTwoPlayerMode()));
+    /* Connecting the button to the library signal clicked, along with the slot switchTwoPlayerMode*/
+    connect(menu.returnTwoPlayerPushButton(),SIGNAL(clicked()),this,SLOT(switchTwoPlayerMode()));
 }
 
 void GameManager::switchTwoPlayerMode()

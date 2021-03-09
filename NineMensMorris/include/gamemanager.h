@@ -1,5 +1,6 @@
 #ifndef GAMEMANAGER_H
 #define GAMEMANAGER_H
+
 #include <QObject>
 #include <QGraphicsScene>
 #include <QGraphicsView>
