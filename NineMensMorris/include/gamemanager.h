@@ -11,7 +11,8 @@ class GameManager : public QObject
 {
    Q_OBJECT
 public:
-    QGraphicsScene menuScene, gameScene;
+    QGraphicsScene menuScene;
+    QGraphicsScene gameScene;
     QGraphicsView view;
     Game* game;
     GameManager();
