@@ -8,14 +8,14 @@ Tutorial::Tutorial(QGraphicsScene *scene){
 void Tutorial::tutorialScreen()
 {
     /* Declaring the button, title, and tutorial text */
-    QFile file("src/tutorial.txt");
+    QFile file(":/text/tutorial.txt");
     file.open(QFile::ReadOnly | QFile::Text);
 
     QGraphicsTextItem* tutorialTitleDisplay = scene->addText("Tutorial");
     QGraphicsTextItem* tutorialTextDisplay = scene->addText(file.readAll());
 
     QFont titleFont("comic sans", 30);
-    QFont tutorialFont("comic sans", 10);
+    QFont tutorialFont("comic sans MS", 10);
     QFont buttonFont("comic sans", 14);
 
     tutorialTitleDisplay->setFont(titleFont);
