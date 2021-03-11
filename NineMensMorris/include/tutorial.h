@@ -24,8 +24,6 @@ public:
     QPushButton *returnPushButton() {return tutorialButton;}
 protected:
      void mousePressEvent(QGraphicsSceneMouseEvent *event);
-signals:
-    void buttonClicked();
 
 };
 

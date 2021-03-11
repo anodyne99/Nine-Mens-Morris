@@ -20,8 +20,6 @@ public:
     QPushButton *returnQuitButton() {return quitButton;}
 protected:
      void mousePressEvent(QGraphicsSceneMouseEvent *event);
-signals:
-    void buttonClicked();
 
 };
 

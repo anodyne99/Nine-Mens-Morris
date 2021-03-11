@@ -14,9 +14,9 @@ void Tutorial::tutorialScreen()
     QGraphicsTextItem* tutorialTitleDisplay = scene->addText("Tutorial");
     QGraphicsTextItem* tutorialTextDisplay = scene->addText(file.readAll());
 
-    QFont titleFont("comic sans", 30);
+    QFont titleFont("comic sans MS", 30);
     QFont tutorialFont("comic sans MS", 10);
-    QFont buttonFont("comic sans", 14);
+    QFont buttonFont("comic sans MS", 14);
 
     tutorialTitleDisplay->setFont(titleFont);
     tutorialTitleDisplay->setPos(325,0);
@@ -30,6 +30,3 @@ void Tutorial::tutorialScreen()
     scene->addWidget(tutorialButton);
 }
 
-void Tutorial::mousePressEvent(QGraphicsSceneMouseEvent *event){
-    emit buttonClicked();
-}
