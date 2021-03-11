@@ -2,10 +2,8 @@
 #define MENU_H
 
 #include <QGraphicsScene>
-#include <QGraphicsRectItem>
 #include <QGraphicsView>
 #include <QPushButton>
-#include <QGraphicsSceneMouseEvent>
 #include <QWidget>
 #include "include/game.h"
 

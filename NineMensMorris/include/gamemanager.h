@@ -1,5 +1,6 @@
 #ifndef GAMEMANAGER_H
 #define GAMEMANAGER_H
+
 #include <QObject>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -11,7 +12,9 @@ class GameManager : public QObject
 {
    Q_OBJECT
 public:
-    QGraphicsScene menuScene, gameScene, tutorialScene;
+    QGraphicsScene menuScene;
+    QGraphicsScene gameScene;
+    QGraphicsScene tutorialScene;
     QGraphicsView view;
     Game* game;
     GameManager();
