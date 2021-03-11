@@ -6,7 +6,7 @@ Menu::Menu(QGraphicsScene *scene){
 }
 void Menu::mainMenuScreen()
 {
-    /* Declaring the button and title */
+    //Declaring the button and title
     QGraphicsTextItem* gameTitle = new QGraphicsTextItem(QString("Nine Mens Morris"));
     QFont titleFont("comic sans", 50);
     QFont buttonFont("comic sans", 14);
