@@ -8,8 +8,8 @@ void Menu::mainMenuScreen()
 {
     //Declaring the button and title
     QGraphicsTextItem* gameTitle = new QGraphicsTextItem(QString("Nine Mens Morris"));
-    QFont titleFont("comic sans", 50);
-    QFont buttonFont("comic sans", 14);
+    QFont titleFont("comic sans MS", 50);
+    QFont buttonFont("comic sans MS", 14);
 
     gameTitle->setFont(titleFont);
     gameTitle->setPos(500,50);
