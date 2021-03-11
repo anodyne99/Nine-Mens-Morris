@@ -4,7 +4,7 @@ GameManager::GameManager(){
     /*setting up the menu scene*/
     Menu menu(&menuScene);
 
-    view.resize(800,800);
+    view.resize(1100,900);
     view.setScene(&menuScene);
     view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
