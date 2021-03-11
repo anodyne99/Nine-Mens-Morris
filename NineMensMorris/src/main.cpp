@@ -11,7 +11,7 @@
 int main(int argc, char *argv[]) {
     QApplication application(argc, argv);
     /* calling the class in charge of the menu and changing scenes*/
-    GameManager g;
+    GameManager manager;
 
     return application.exec();
 }
