@@ -10,7 +10,6 @@ CONFIG += c++11
 
 SOURCES += \
     src/board.cpp \
-    src/button.cpp \
     src/game.cpp \
     src/gamemanager.cpp \
     src/main.cpp \
@@ -21,7 +20,6 @@ SOURCES += \
 
 HEADERS += \
     include/board.h \
-    include/button.h \
     include/game.h \
     include/gamemanager.h \
     include/menu.h \

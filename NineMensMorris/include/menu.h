@@ -8,18 +8,18 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QWidget>
 #include "include/game.h"
-#include "include/button.h"
 
 class Menu : public QObject{
     Q_OBJECT
 private:
-    Button* twoPlayers;
     QPushButton* twoPlayerButton;
+    QPushButton* quitButton;
 public:
     QGraphicsScene* scene;
     Menu(QGraphicsScene *scene);
     void mainMenuScreen();
-    QPushButton *returnPushButton() {return twoPlayerButton;}
+    QPushButton *returnTwoPlayerPushButton() {return twoPlayerButton;}
+    QPushButton *returnQuitButton() {return quitButton;}
 protected:
      void mousePressEvent(QGraphicsSceneMouseEvent *event);
 signals:
