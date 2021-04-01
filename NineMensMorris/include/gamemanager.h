@@ -2,20 +2,22 @@
 #define GAMEMANAGER_H
 
 #include <QObject>
+#include <QApplication>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include "include/menu.h"
 #include "include/tutorial.h"
 #include "include/game.h"
 #include "include/singleplayergame.h"
+#include "include/singleplayerscreen.h"
 
-class GameManager : public QObject
-{
+class GameManager : public QObject {
    Q_OBJECT
 public:
     QGraphicsScene menuScene;
     QGraphicsScene gameScene;
     QGraphicsScene tutorialScene;
+    QGraphicsScene singlePlayerScene;
     QGraphicsView view;
     Game *game;
     SinglePlayerGame *computerGame;
@@ -23,8 +25,12 @@ public:
 private slots:
     void switchTutorialScreen();
     void switchTwoPlayerMode();
-    void switchComputerPlayerMode();
-
+    void switchComputerPlayerModeWhite();
+    void switchComputerPlayerModeBlack();
+    void switchSinglePlayerScreen();
+    void switchBackToMainMenu();
+    void switchBackToMainMenuSinglePlayer();
+    void switchBackToMainMenuTwoPlayer();
 };
 
 #endif // GAMEMANAGER_H
