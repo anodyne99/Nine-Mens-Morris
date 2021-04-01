@@ -35,7 +35,7 @@ public:
     void setPlayerTurnText(bool whitePiece);
     void setInstructionText(int turnNumber, bool captureMode = false);
 
-    virtual void checkForNewMill();
+    void checkForNewMill();
     void checkForFlying();
     void checkForPieceVictory();
     void checkForMovesVictory();
@@ -93,7 +93,7 @@ protected:
 private slots:
     void pieceCaptureAction(Piece *piece);
     void pieceSelectAction(Piece *piece);
-    void nextTurn(Piece *piece);
+    virtual void nextTurn(Piece *piece);
 
 };
 
