@@ -1,20 +1,16 @@
 #include "include/gamemanager.h"
 
 GameManager::GameManager() {
-    //setting up the menu scene
-    Menu menu(&menuScene);
-
-    view.resize(1100,900);
-    view.setScene(&menuScene);
+    //setting up the splash screen scene
+    Splash splash(&splashScene);
     view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view.resize(1100,900);
+    view.setScene(&splashScene);
     view.show();
 
-    //Connecting the button to the library signal clicked, along with the slot switchTwoPlayerMode
-    connect(menu.returnTwoPlayerPushButton(),SIGNAL(clicked()),this,SLOT(switchTwoPlayerMode()));
-    connect(menu.returnSinglePlayerPushButton(), SIGNAL(clicked()), this, SLOT(switchSinglePlayerScreen()));
-    connect(menu.returnTutorialPushButton(), SIGNAL(clicked()), this, SLOT(switchTutorialScreen()));
-    connect(menu.returnQuitButton(),SIGNAL(clicked()),qApp,SLOT(quit()));
+    //switches to the menu scene when splash completed
+    QTimer::singleShot(5000, this, SLOT(timerComplete()));
 }
 
 //this method handles switching to the single player prompt to asking about what color to play
@@ -85,4 +81,17 @@ void GameManager::switchBackToMainMenuSinglePlayer() {
     //set the scene back to the menu scene
     view.setScene(&menuScene);
     delete computerGame;
+}
+
+//this method is specifically for first run to allow the splash screen to be visible
+void GameManager::timerComplete(){
+    Menu menu(&menuScene);
+    view.setScene(&menuScene);
+    view.show();
+
+    //Connecting the button to the library signal clicked, along with the slot switchTwoPlayerMode
+    connect(menu.returnTwoPlayerPushButton(),SIGNAL(clicked()),this,SLOT(switchTwoPlayerMode()));
+    connect(menu.returnSinglePlayerPushButton(), SIGNAL(clicked()), this, SLOT(switchSinglePlayerScreen()));
+    connect(menu.returnTutorialPushButton(), SIGNAL(clicked()), this, SLOT(switchTutorialScreen()));
+    connect(menu.returnQuitButton(),SIGNAL(clicked()),qApp,SLOT(quit()));
 }

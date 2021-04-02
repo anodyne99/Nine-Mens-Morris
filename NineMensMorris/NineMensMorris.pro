@@ -18,6 +18,7 @@ SOURCES += \
     src/singleplayergame.cpp \
     src/singleplayerscreen.cpp \
     src/space.cpp \
+    src/splash.cpp \
     src/tutorial.cpp
 
 HEADERS += \
@@ -29,6 +30,7 @@ HEADERS += \
     include/singleplayergame.h \
     include/singleplayerscreen.h \
     include/space.h \
+    include/splash.h \
     include/tutorial.h
 
 FORMS +=
