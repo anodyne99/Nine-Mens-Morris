@@ -1,6 +1,7 @@
 #include "include/gamemanager.h"
 
-GameManager::GameManager() {
+GameManager::GameManager(bool wait) {
+    int waitTime = 5000;
     //setting up the splash screen scene
     Splash splash(&splashScene);
     view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -8,9 +9,12 @@ GameManager::GameManager() {
     view.resize(1920,1080);
     view.setScene(&splashScene);
     view.show();
-
+    if (wait) {
+        waitTime = 0;
+    }
     //switches to the menu scene when splash completed
-    QTimer::singleShot(5000, this, SLOT(timerComplete()));
+    QTimer::singleShot(waitTime, this, SLOT(timerComplete()));
+
 }
 
 //this method handles switching to the single player prompt to asking about what color to play
@@ -84,13 +88,25 @@ void GameManager::switchBackToMainMenuSinglePlayer() {
 
 //this method is specifically for first run to allow the splash screen to be visible
 void GameManager::timerComplete(){
-    Menu menu(&menuScene);
+    menu = new Menu(&menuScene);
     view.setScene(&menuScene);
     view.show();
 
     //Connecting the button to the library signal clicked, along with the slot switchTwoPlayerMode
-    connect(menu.returnTwoPlayerPushButton(),SIGNAL(clicked()),this,SLOT(switchTwoPlayerMode()));
-    connect(menu.returnSinglePlayerPushButton(), SIGNAL(clicked()), this, SLOT(switchSinglePlayerScreen()));
-    connect(menu.returnTutorialPushButton(), SIGNAL(clicked()), this, SLOT(switchTutorialScreen()));
-    connect(menu.returnQuitButton(),SIGNAL(clicked()),qApp,SLOT(quit()));
+    connect(menu->returnTwoPlayerPushButton(),SIGNAL(clicked()),this,SLOT(switchTwoPlayerMode()));
+    connect(menu->returnSinglePlayerPushButton(), SIGNAL(clicked()), this, SLOT(switchSinglePlayerScreen()));
+    connect(menu->returnTutorialPushButton(), SIGNAL(clicked()), this, SLOT(switchTutorialScreen()));
+    connect(menu->returnQuitButton(),SIGNAL(clicked()),qApp,SLOT(quit()));
+}
+
+//Used to test the switch back to the main menu
+void GameManager::testSwitchBackToMainMenu(bool singlePlayerGame){
+    view.setScene(&menuScene);
+    //true deletes the computer game and false deletes the two player game
+    if (singlePlayerGame) {
+        delete computerGame;
+    }
+    else {
+        delete game;
+    }
 }
